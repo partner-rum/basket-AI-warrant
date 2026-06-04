@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Варрант на корзину техно-акций — Rumberg Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; color: #1a1a2e; background: #fff; }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+    background: linear-gradient(90deg, #1a3a5c, #e8782a); border-radius: 3px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: #e8782a; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #e8782a; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); cursor: pointer;
+  }
+  input[type=number] {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 6px 10px; color: #e8782a; font-size: 16px; font-weight: 700;
+    font-family: inherit; width: 90px; text-align: center; outline: none;
+  }
+  input[type=number]:focus { border-color: #e8782a; }
+
+  @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+  .nav { background: #1e2235; padding: 16px 24px; display: flex; align-items: center; justify-content: center; }
+  .nav-text { display: flex; flex-direction: column; line-height: 1; text-align: center; }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 4px; }
+  .nav-sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 6px; margin-top: 2px; }
+
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 50%, #0d1b2a 100%);
+    padding: 60px 24px 50px; text-align: center; overflow: hidden;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(232,120,42,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(26,58,92,0.3) 0%, transparent 60%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+  .badge {
+    display: inline-block; background: rgba(232,120,42,0.2); color: #e8a44a;
+    padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 16px;
+  }
+  h1 .accent { color: #e8782a; }
+  .subtitle { color: rgba(255,255,255,0.7); font-size: 17px; line-height: 1.6; max-width: 620px; margin: 0 auto 32px; }
+  .hero-stats { display: flex; justify-content: center; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .hero-stat { text-align: center; }
+  .hero-stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: #e8782a; }
+  .hero-stat-label { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 4px; }
+  .hero-stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+
+  .disclaimer-bar {
+    background: #fef3c7; border-bottom: 1px solid #fde68a; padding: 12px 24px;
+    text-align: center; font-size: 13px; color: #92400e;
+  }
+
+  .section { padding: 56px 24px; max-width: 1020px; margin: 0 auto; }
+  .section--dark { background: #0d1b2a; max-width: 100%; }
+  .section--dark .section-inner { max-width: 1020px; margin: 0 auto; }
+  .section--warm { background: #f8f6f3; max-width: 100%; }
+  .section--warm .section-inner { max-width: 1020px; margin: 0 auto; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+  .section--dark h2 { color: #fff; }
+  .section-sub { text-align: center; color: #888; font-size: 15px; margin-bottom: 36px; }
+  .section--dark .section-sub { color: rgba(255,255,255,0.6); }
+
+  /* BASKET */
+  .basket-grid { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .basket-card {
+    flex: 1 1 170px; max-width: 190px; background: #fff; border-radius: 16px; padding: 24px 20px;
+    text-align: center; border: 1px solid #e8e4df; position: relative; overflow: hidden;
+  }
+  .basket-weight-bar { position: absolute; bottom: 0; left: 0; height: 4px; background: #e8782a; }
+  .basket-ticker { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #1a1a2e; }
+  .basket-name { font-size: 12px; color: #999; margin: 6px 0 12px; line-height: 1.4; min-height: 32px; }
+  .basket-weight { font-size: 28px; font-weight: 900; color: #e8782a; }
+  .basket-weight-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* STEPS */
+  .steps-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .step-card {
+    flex: 1 1 220px; max-width: 280px; background: #fff; border-radius: 16px;
+    padding: 24px; position: relative; animation: fadeUp 0.6s ease-out both;
+  }
+  .step-card:nth-child(2) { animation-delay: 0.15s; }
+  .step-card:nth-child(3) { animation-delay: 0.3s; }
+  .step-card:nth-child(4) { animation-delay: 0.45s; }
+  .step-icon { font-size: 28px; margin-bottom: 10px; }
+  .step-num {
+    position: absolute; top: 12px; right: 16px;
+    font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: rgba(232,120,42,0.1);
+  }
+  .step-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: #666; line-height: 1.6; }
+
+  /* CALC */
+  .calc-grid { display: flex; gap: 28px; flex-wrap: wrap; max-width: 980px; margin: 0 auto; }
+  .calc-inputs {
+    flex: 1 1 420px; background: rgba(255,255,255,0.06); border-radius: 16px;
+    padding: 28px; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .calc-results {
+    flex: 1 1 340px;
+    background: linear-gradient(180deg, rgba(232,120,42,0.12) 0%, rgba(232,120,42,0.04) 100%);
+    border-radius: 16px; padding: 28px; border: 1px solid rgba(232,120,42,0.2); height: fit-content;
+  }
+  .input-group { margin-bottom: 22px; }
+  .input-group:last-child { margin-bottom: 0; }
+  .label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600; margin-bottom: 10px;
+  }
+  .label-value { color: #e8782a; font-size: 18px; font-weight: 700; }
+  .range-labels {
+    display: flex; justify-content: space-between;
+    color: rgba(255,255,255,0.3); font-size: 11px; margin-top: 5px;
+  }
+  .stock-slider-row { margin-bottom: 16px; }
+  .stock-slider-label {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
+  }
+  .stock-slider-ticker { color: #fff; font-size: 14px; font-weight: 700; }
+  .stock-slider-weight { color: rgba(255,255,255,0.35); font-size: 12px; margin-left: 6px; font-weight: 400; }
+  .stock-slider-perf { font-size: 14px; font-weight: 700; }
+  .divider-line { height: 1px; background: rgba(255,255,255,0.08); margin: 22px 0; }
+
+  .result-header {
+    color: #e8782a; font-size: 16px; font-weight: 700; margin-bottom: 20px;
+    padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .result-label { color: rgba(255,255,255,0.5); font-size: 13px; }
+  .result-val { color: #fff; font-size: 15px; font-weight: 600; }
+  .result-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 8px 0; }
+  .result-highlight { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px 12px; margin: 4px -12px; }
+  .positive { color: #4ade80 !important; }
+  .negative { color: #f87171 !important; }
+
+  .scale-btn {
+    padding: 8px 16px; border-radius: 8px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6);
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .scale-btn.active { background: rgba(232,120,42,0.2); border-color: #e8782a; color: #e8782a; }
+  .chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 16px; }
+  .chart-legend-item {
+    display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none;
+    font-size: 13px; color: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 6px; transition: opacity 0.2s;
+  }
+  .chart-legend-item.hidden { opacity: 0.35; }
+  .chart-legend-dot { width: 14px; height: 14px; border-radius: 4px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { padding: 14px 16px; text-align: left; font-weight: 700; border-bottom: 2px solid #e8782a; font-size: 13px; }
+  td { padding: 12px 16px; border-bottom: 1px solid #eee; }
+  tr.even { background: #faf9f7; }
+  .text-green { color: #16a34a; }
+  .text-red { color: #dc2626; }
+  .fw700 { font-weight: 700; }
+
+  /* PARAMS */
+  .params-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px; max-width: 900px; margin: 32px auto 0;
+  }
+  .param-item { padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e8e4df; }
+  .param-key { font-size: 11px; color: #999; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .param-val { font-size: 15px; font-weight: 700; }
+
+  /* RISKS */
+  .risks-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .risk-card {
+    flex: 1 1 260px; max-width: 300px; padding: 24px; border-radius: 12px;
+    border: 1px solid #fde68a; background: #fffbeb;
+  }
+  .risk-icon { font-size: 24px; margin-bottom: 8px; }
+  .risk-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #92400e; }
+  .risk-desc { font-size: 13px; color: #78716c; line-height: 1.6; }
+
+  .footer { background: #0d1b2a; padding: 32px 24px; }
+  .footer-inner { max-width: 700px; margin: 0 auto; }
+  .disclaimer { color: rgba(255,255,255,0.35); font-size: 12px; line-height: 1.7; text-align: center; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 36px; }
+    .hero-stat-value { font-size: 20px; }
+    .section { padding: 40px 16px; }
+    h2 { font-size: 24px; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-text">
+    <span class="nav-brand">RUMBERG</span>
+    <span class="nav-sub">CAPITAL</span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="badge">СТРУКТУРНЫЙ ПРОДУКТ</div>
+    <h1>Варрант на корзину<br><span class="accent">мировых техно-лидеров</span></h1>
+    <p class="subtitle">Участие в росте полупроводников и AI-инфраструктуры (Nvidia, AMD, Dell и др.) плюс доход от ослабления рубля. Ограниченный риск — теряете только премию.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">5</div>
+        <div class="hero-stat-label">техно-активов в корзине</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">100%</div>
+        <div class="hero-stat-label">участие в росте</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">+ USD</div>
+        <div class="hero-stat-label">доход от курса доллара</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">✓</div>
+        <div class="hero-stat-label">без автозакрытия позиции</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="disclaimer-bar">
+  ⚠️ Все расчёты носят индикативный характер и не являются офертой. Продукт доступен только квалифицированным инвесторам.
+</div>
+
+<!-- BASKET -->
+<section class="section--warm">
+  <div class="section-inner" style="padding:56px 24px;">
+    <h2>Состав корзины</h2>
+    <p class="section-sub">Полупроводники и AI-инфраструктура с фиксированными весами</p>
+    <div class="basket-grid">
+      <div class="basket-card">
+        <div class="basket-ticker" style="color:#00A0C0">SMH</div>
+        <div class="basket-name">VanEck Semiconductor ETF</div>
+        <div class="basket-weight">30%</div>
+        <div class="basket-weight-label">вес</div>
+        <div class="basket-weight-bar" style="width:100%; background:#00A0C0"></div>
+      </div>
+      <div class="basket-card">
+        <div class="basket-ticker" style="color:#76B900">NVDA</div>
+        <div class="basket-name">Nvidia Corporation</div>
+        <div class="basket-weight">25%</div>
+        <div class="basket-weight-label">вес</div>
+        <div class="basket-weight-bar" style="width:83%; background:#76B900"></div>
+      </div>
+      <div class="basket-card">
+        <div class="basket-ticker" style="color:#ED1C24">AMD</div>
+        <div class="basket-name">Advanced Micro Devices</div>
+        <div class="basket-weight">20%</div>
+        <div class="basket-weight-label">вес</div>
+        <div class="basket-weight-bar" style="width:67%; background:#ED1C24"></div>
+      </div>
+      <div class="basket-card">
+        <div class="basket-ticker" style="color:#0076CE">DELL</div>
+        <div class="basket-name">Dell Technologies</div>
+        <div class="basket-weight">15%</div>
+        <div class="basket-weight-label">вес</div>
+        <div class="basket-weight-bar" style="width:50%; background:#0076CE"></div>
+      </div>
+      <div class="basket-card">
+        <div class="basket-ticker" style="color:#C99700">NBIS</div>
+        <div class="basket-name">Nebius Group</div>
+        <div class="basket-weight">10%</div>
+        <div class="basket-weight-label">вес</div>
+        <div class="basket-weight-bar" style="width:33%; background:#E0B000"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUBBLE VS BOOM -->
+<section class="section">
+  <h2>Бум, а не пузырь</h2>
+  <p class="section-sub">Пузырь строится на вере. Бум — на прибыли. AI-ралли подкреплено реальными доходами компаний.</p>
+  <div style="display:flex; gap:24px; flex-wrap:wrap; justify-content:center; margin-top:32px;">
+    <div style="flex:1 1 360px; max-width:440px; background:#fff; border-radius:16px; padding:28px; border:1px solid #fecaca;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <span style="font-size:20px;">🎈</span>
+        <span style="font-size:13px; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:1px;">Пузырь</span>
+      </div>
+      <div style="font-size:18px; font-weight:700; margin-bottom:4px;">Цена отрывается от прибыли</div>
+      <div style="font-size:13px; color:#888; margin-bottom:16px;">Cisco, 1997–2002 (база 100)</div>
+      <svg viewBox="0 0 320 150" style="width:100%; height:auto;">
+        <polyline fill="none" stroke="#dc2626" stroke-width="2.5" points="12.0,138.0 54.3,117.0 96.6,84.8 138.9,12.0 181.1,45.6 223.4,93.2 265.7,119.8 308.0,126.8"/>
+        <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,3" points="12.0,138.0 54.3,133.8 96.6,125.4 138.9,111.4 181.1,105.8 223.4,110.0 265.7,118.4 308.0,122.6"/>
+        <circle cx="138.9" cy="12.0" r="4" fill="#dc2626"/>
+      </svg>
+      <div style="display:flex; gap:16px; margin-top:8px; font-size:12px;">
+        <span style="color:#dc2626; font-weight:600;">▬ Цена акции</span>
+        <span style="color:#f59e0b; font-weight:600;">▬ Прибыль</span>
+      </div>
+      <p style="font-size:13px; color:#666; line-height:1.6; margin-top:14px;">Котировки взлетели в 10 раз, а прибыль почти не росла. Когда вера закончилась — цена рухнула на 80%.</p>
+    </div>
+    <div style="flex:1 1 360px; max-width:440px; background:#fff; border-radius:16px; padding:28px; border:1px solid #bbf7d0;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <span style="font-size:20px;">🚀</span>
+        <span style="font-size:13px; font-weight:700; color:#16a34a; text-transform:uppercase; letter-spacing:1px;">Бум</span>
+      </div>
+      <div style="font-size:18px; font-weight:700; margin-bottom:4px;">Рост подкреплён прибылью</div>
+      <div style="font-size:13px; color:#888; margin-bottom:16px;">Nvidia, 2020–2026 (база 100)</div>
+      <svg viewBox="0 0 320 150" style="width:100%; height:auto;">
+        <polyline fill="none" stroke="#76B900" stroke-width="2.5" points="12.0,138.0 54.3,130.3 96.6,119.1 138.9,123.3 181.1,89.0 223.4,64.5 265.7,34.8 308.0,12.0"/>
+        <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,3" points="12.0,138.0 54.3,132.4 96.6,125.0 138.9,126.8 181.1,94.2 223.4,69.8 265.7,43.5 308.0,19.0"/>
+        <circle cx="308.0" cy="12.0" r="4" fill="#76B900"/>
+      </svg>
+      <div style="display:flex; gap:16px; margin-top:8px; font-size:12px;">
+        <span style="color:#76B900; font-weight:600;">▬ Цена акции</span>
+        <span style="color:#f59e0b; font-weight:600;">▬ Прибыль</span>
+      </div>
+      <p style="font-size:13px; color:#666; line-height:1.6; margin-top:14px;">Цена и прибыль растут синхронно. Оценки опираются на реальные денежные потоки от спроса на AI-чипы.</p>
+    </div>
+  </div>
+  <p style="text-align:center; max-width:680px; margin:32px auto 0; font-size:15px; color:#555; line-height:1.7;">
+    Корзина состоит из компаний, чьи доходы растут вместе с котировками — это участники <strong>реального бума спроса на полупроводники и AI-инфраструктуру</strong>, а не спекулятивные истории.
+  </p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <h2>Как это работает</h2>
+  <div class="steps-grid">
+    <div class="step-card" style="background:#f8f6f3;">
+      <div class="step-icon">💰</div><div class="step-num">01</div>
+      <div class="step-title">Покупаете варрант</div>
+      <p class="step-desc">Платите премию — это ваш максимальный риск. Номинал не возвращается</p>
+    </div>
+    <div class="step-card" style="background:#f8f6f3;">
+      <div class="step-icon">📈</div><div class="step-num">02</div>
+      <div class="step-title">Корзина растёт</div>
+      <p class="step-desc">Считается взвешенный рост 5 акций относительно старта</p>
+    </div>
+    <div class="step-card" style="background:#f8f6f3;">
+      <div class="step-icon">💵</div><div class="step-num">03</div>
+      <div class="step-title">Доллар укрепляется</div>
+      <p class="step-desc">Рост курса USD/RUB добавляется к доходу (за вычетом 3% спреда)</p>
+    </div>
+    <div class="step-card" style="background:#f8f6f3;">
+      <div class="step-icon">🎯</div><div class="step-num">04</div>
+      <div class="step-title">Получаете выплату</div>
+      <p class="step-desc">100% от роста корзины × курсовая доходность. Если корзина не выросла — выплата 0</p>
+    </div>
+  </div>
+
+  <!-- SIMPLE PAYOFF FORMULA -->
+  <div style="max-width:820px; margin:48px auto 0; background:linear-gradient(135deg, #0d1b2a, #1b3a5c); border-radius:20px; padding:40px 32px; text-align:center;">
+    <div style="color:rgba(255,255,255,0.5); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:24px;">Что вы покупаете</div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;">
+      <div style="background:rgba(232,120,42,0.15); border:1px solid rgba(232,120,42,0.3); border-radius:14px; padding:20px 24px; min-width:160px;">
+        <div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:900; color:#e8782a;">Рост корзины</div>
+        <div style="color:rgba(255,255,255,0.5); font-size:12px; margin-top:6px;">5 техно-акций над стартом</div>
+      </div>
+      <div style="font-size:32px; color:rgba(255,255,255,0.4); font-weight:300;">×</div>
+      <div style="background:rgba(118,185,0,0.12); border:1px solid rgba(118,185,0,0.3); border-radius:14px; padding:20px 24px; min-width:160px;">
+        <div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:900; color:#9ED93B;">Курс доллара</div>
+        <div style="color:rgba(255,255,255,0.5); font-size:12px; margin-top:6px;">переоценка USD/RUB</div>
+      </div>
+    </div>
+    <div style="margin-top:24px; color:rgba(255,255,255,0.7); font-size:16px; line-height:1.6;">
+      Вы зарабатываете на <strong style="color:#e8782a;">росте мировых техно-лидеров</strong> и одновременно на <strong style="color:#9ED93B;">ослаблении рубля</strong>.<br>
+      Платите только премию — а участвуете в полном росте корзины.
+    </div>
+    <div style="margin-top:16px; color:rgba(255,255,255,0.35); font-size:12px;">
+      Точная формула: 100% × max(рост корзины − 100%; 0) × переоценка USD/RUB (с учётом спреда)
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="section--dark">
+  <div class="section-inner" style="padding:56px 24px;">
+    <h2>Калькулятор доходности</h2>
+    <p class="section-sub">Задайте сценарий по каждой акции и курсу доллара</p>
+
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <!-- Premium & investment -->
+        <div class="input-group">
+          <div class="label">
+            <span>Инвестиция в варрант</span>
+            <span class="label-value" id="investDisplay">1 000 000 ₽</span>
+          </div>
+          <input type="range" id="investSlider" min="100000" max="50000000" step="100000" value="1000000" oninput="recalc()">
+          <div class="range-labels"><span>100 тыс</span><span>50 млн</span></div>
+        </div>
+
+        <div class="input-group">
+          <div class="label">
+            <span>Цена варранта (премия), % от номинала</span>
+            <span><input type="number" id="premiumInput" value="50" min="5" max="100" step="0.5" oninput="recalc()"> <span style="color:rgba(255,255,255,0.4)">%</span></span>
+          </div>
+          <div style="font-size:12px; color:#e8a44a; margin-top:8px; background:rgba(232,120,42,0.1); padding:8px 12px; border-radius:8px; border:1px solid rgba(232,120,42,0.2);">ℹ️ Цена индикативна. Финальная стоимость будет определена 11 июня 2026 года.</div>
+        </div>
+
+        <div class="divider-line"></div>
+
+        <!-- Stock performance sliders -->
+        <div style="color:rgba(255,255,255,0.7); font-size:14px; font-weight:600; margin-bottom:16px;">Изменение цены акций за срок</div>
+
+        <div class="stock-slider-row">
+          <div class="stock-slider-label">
+            <span><span class="stock-slider-ticker">SMH</span><span class="stock-slider-weight">30%</span></span>
+            <span class="stock-slider-perf" id="perfLabel-smh">+40%</span>
+          </div>
+          <input type="range" id="perf-smh" min="-50" max="200" step="1" value="40" oninput="recalc()">
+        </div>
+        <div class="stock-slider-row">
+          <div class="stock-slider-label">
+            <span><span class="stock-slider-ticker">NVDA</span><span class="stock-slider-weight">25%</span></span>
+            <span class="stock-slider-perf" id="perfLabel-nvda">+60%</span>
+          </div>
+          <input type="range" id="perf-nvda" min="-50" max="200" step="1" value="60" oninput="recalc()">
+        </div>
+        <div class="stock-slider-row">
+          <div class="stock-slider-label">
+            <span><span class="stock-slider-ticker">AMD</span><span class="stock-slider-weight">20%</span></span>
+            <span class="stock-slider-perf" id="perfLabel-amd">+45%</span>
+          </div>
+          <input type="range" id="perf-amd" min="-50" max="200" step="1" value="45" oninput="recalc()">
+        </div>
+        <div class="stock-slider-row">
+          <div class="stock-slider-label">
+            <span><span class="stock-slider-ticker">DELL</span><span class="stock-slider-weight">15%</span></span>
+            <span class="stock-slider-perf" id="perfLabel-dell">+30%</span>
+          </div>
+          <input type="range" id="perf-dell" min="-50" max="200" step="1" value="30" oninput="recalc()">
+        </div>
+        <div class="stock-slider-row">
+          <div class="stock-slider-label">
+            <span><span class="stock-slider-ticker">NBIS</span><span class="stock-slider-weight">10%</span></span>
+            <span class="stock-slider-perf" id="perfLabel-nbis">+50%</span>
+          </div>
+          <input type="range" id="perf-nbis" min="-50" max="200" step="1" value="50" oninput="recalc()">
+        </div>
+
+        <div class="divider-line"></div>
+
+        <!-- USD/RUB -->
+        <div class="input-group" style="margin-bottom:14px;">
+          <div class="label">
+            <span>Курс USD/RUB на старте</span>
+            <span><input type="number" id="fxStartInput" value="73" min="40" max="200" step="1" oninput="recalc()"> <span style="color:rgba(255,255,255,0.4)">₽</span></span>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="label">
+            <span>Курс USD/RUB в конце</span>
+            <span class="label-value" id="fxEndDisplay">95 ₽</span>
+          </div>
+          <input type="range" id="fxEndSlider" min="50" max="180" step="1" value="95" oninput="recalc()">
+          <div class="range-labels"><span>50 ₽</span><span>180 ₽</span></div>
+        </div>
+      </div>
+
+      <div class="calc-results">
+        <div class="result-header">Результат при заданном сценарии</div>
+        <div class="result-row">
+          <span class="result-label">Рост корзины (взвеш.)</span>
+          <span class="result-val" id="resBasket">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Превышение над страйком</span>
+          <span class="result-val" id="resExcess">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Курсовая доходность</span>
+          <span class="result-val" id="resFx">—</span>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-row">
+          <span class="result-label">Выплата на номинал</span>
+          <span class="result-val" id="resPayoff">—</span>
+        </div>
+        <div class="result-row result-highlight">
+          <span class="result-label">Доходность варранта</span>
+          <span class="result-val" id="resReturn" style="font-size:22px">—</span>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-row">
+          <span class="result-label">Кол-во варрантов</span>
+          <span class="result-val" id="resNum">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Вложено</span>
+          <span class="result-val" id="resInvested">—</span>
+        </div>
+        <div class="result-row result-highlight">
+          <span class="result-label">Итоговая выплата</span>
+          <span class="result-val" id="resTotal" style="font-size:20px;font-weight:700">—</span>
+        </div>
+        <div class="result-row result-highlight" style="margin-top:6px">
+          <span class="result-label">Прибыль / Убыток</span>
+          <span class="result-val" id="resPnl" style="font-size:22px;font-weight:700">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHART: history + projection -->
+    <div style="max-width:980px; margin:48px auto 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+        <h2 style="color:#fff; text-align:left; margin:0;">История и ваша проекция</h2>
+        <div style="display:flex; gap:8px;">
+          <button class="scale-btn active" id="scaleLinear" onclick="setScale('linear')">Линейная</button>
+          <button class="scale-btn" id="scaleLog" onclick="setScale('logarithmic')">Логарифм.</button>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border-radius:16px; padding:24px; border:1px solid rgba(255,255,255,0.08); position:relative; height:440px;">
+        <canvas id="historyChart"></canvas>
+      </div>
+      <p style="color:rgba(255,255,255,0.4); font-size:12px; text-align:center; margin-top:12px;">
+        Сплошная линия — факт (база 100 = окт 2024). Пунктир — проекция до погашения по заданным ползункам. Кликните на тикер в легенде, чтобы скрыть/показать.
+      </p>
+      <div class="chart-legend" id="chartLegend"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="section">
+  <h2>Таблица сценариев</h2>
+  <p class="section-sub" id="tableSubtitle">Доходность при разном росте корзины (курс по выбору)</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Рост корзины</th>
+          <th>Превышение</th>
+          <th>Курс. доход</th>
+          <th>Выплата / ном.</th>
+          <th>Доходность варранта</th>
+        </tr>
+      </thead>
+      <tbody id="scenarioBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PARAMS -->
+<section class="section--warm">
+  <div class="section-inner" style="padding:56px 24px;">
+    <h2>Параметры выпуска</h2>
+    <div class="params-grid" id="paramsGrid"></div>
+    <p style="text-align:center; max-width:680px; margin:24px auto 0; font-size:13px; color:#999;">
+      ℹ️ Цена (премия) индикативна. Финальная стоимость будет определена 11 июня 2026 года.
+    </p>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section class="section">
+  <h2>Риски</h2>
+  <div class="risks-grid">
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Корзина не вырастет</div>
+      <p class="risk-desc">Если взвешенный рост корзины окажется ниже старта, выплата равна нулю — вы теряете уплаченную премию полностью</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Укрепление рубля</div>
+      <p class="risk-desc">Снижение курса USD/RUB уменьшает выплату — курсовая компонента работает в обе стороны</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Номинал не возвращается</div>
+      <p class="risk-desc">Премия — это стоимость продукта. Она не возвращается вне зависимости от исхода</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="disclaimer">
+      Все представленные расчёты носят исключительно индикативный характер и не являются офертой или инвестиционной рекомендацией.
+      Продукт доступен только квалифицированным инвесторам в соответствии с законодательством РФ.
+      Прошлые результаты не гарантируют будущую доходность. Инвестирование связано с рисками потери капитала.
+      ISIN RU000A10B9X5. Эмитент: ООО «СФО Румберг Структурные Продукты».
+    </p>
+  </div>
+</footer>
+
+<script>
+// ─── CONSTANTS ───
+var NOMINAL = 1000;
+var PARTICIPATION = 1.0;   // 100%
+var FX_SPREAD = 0.03;      // 3%
+var STRIKE = 1.0;          // 100% барьер
+var WEIGHTS = { smh: 0.30, nvda: 0.25, amd: 0.20, dell: 0.15, nbis: 0.10 };
+var TICKERS = ['smh', 'nvda', 'amd', 'dell', 'nbis'];
+
+function fmt(n) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)); }
+function fmtM(n) {
+  if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(2) + ' млрд';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + ' млн';
+  return fmt(n);
+}
+
+// ─── PAYOFF ───
+// ДД = Nom × P × MAX(Σ wi × финал/старт − 100%; 0) × (100% − FXspread) × (FX_фин / FX_нач)
+function calcPayoff(basketRatio, fxRatio) {
+  var excess = Math.max(0, basketRatio - STRIKE);
+  var payoff = NOMINAL * PARTICIPATION * excess * (1 - FX_SPREAD) * fxRatio;
+  return { excess: excess, payoff: payoff };
+}
+
+// ─── RECALC ───
+function recalc() {
+  var invest = parseFloat(document.getElementById('investSlider').value);
+  var premiumPct = parseFloat(document.getElementById('premiumInput').value) || 30;
+  var fxStart = parseFloat(document.getElementById('fxStartInput').value) || 80;
+  var fxEnd = parseFloat(document.getElementById('fxEndSlider').value);
+
+  // Stock performances → basket ratio
+  var basketRatio = 0;
+  TICKERS.forEach(function(t) {
+    var perf = parseFloat(document.getElementById('perf-' + t).value);
+    document.getElementById('perfLabel-' + t).textContent = (perf > 0 ? '+' : '') + perf + '%';
+    var el = document.getElementById('perfLabel-' + t);
+    el.className = 'stock-slider-perf ' + (perf >= 0 ? 'positive' : 'negative');
+    basketRatio += WEIGHTS[t] * (1 + perf / 100);
+  });
+
+  var fxRatio = fxEnd / fxStart;
+  var res = calcPayoff(basketRatio, fxRatio);
+
+  // Displays
+  document.getElementById('investDisplay').textContent = fmt(invest) + ' ₽';
+  document.getElementById('fxEndDisplay').textContent = fxEnd + ' ₽';
+
+  var basketPct = (basketRatio - 1) * 100;
+  var elB = document.getElementById('resBasket');
+  elB.textContent = (basketPct > 0 ? '+' : '') + basketPct.toFixed(1) + '%';
+  elB.className = 'result-val ' + (basketPct >= 0 ? 'positive' : 'negative');
+
+  document.getElementById('resExcess').textContent = (res.excess * 100).toFixed(1) + '%';
+
+  var fxPct = (fxRatio - 1) * 100;
+  var elFx = document.getElementById('resFx');
+  elFx.textContent = (fxPct > 0 ? '+' : '') + fxPct.toFixed(1) + '%';
+  elFx.className = 'result-val ' + (fxPct >= 0 ? 'positive' : 'negative');
+
+  document.getElementById('resPayoff').textContent = res.payoff.toFixed(1) + ' ₽';
+
+  // Premium economics
+  var premiumPerNom = (premiumPct / 100) * NOMINAL;
+  var warrantReturn = premiumPerNom > 0 ? ((res.payoff - premiumPerNom) / premiumPerNom) * 100 : 0;
+  var elR = document.getElementById('resReturn');
+  elR.textContent = (warrantReturn > 0 ? '+' : '') + warrantReturn.toFixed(0) + '%';
+  elR.className = 'result-val ' + (warrantReturn >= 0 ? 'positive' : 'negative');
+  elR.style.fontSize = '22px';
+
+  var numWarrants = Math.floor(invest / premiumPerNom);
+  var totalInvested = numWarrants * premiumPerNom;
+  var totalPayout = numWarrants * res.payoff;
+  var pnl = totalPayout - totalInvested;
+
+  document.getElementById('resNum').textContent = fmt(numWarrants) + ' шт.';
+  document.getElementById('resInvested').textContent = fmt(totalInvested) + ' ₽';
+  document.getElementById('resTotal').textContent = fmt(totalPayout) + ' ₽';
+
+  var elPnl = document.getElementById('resPnl');
+  elPnl.textContent = (pnl >= 0 ? '+' : '') + fmt(pnl) + ' ₽';
+  elPnl.className = 'result-val ' + (pnl >= 0 ? 'positive' : 'negative');
+  elPnl.style.cssText = 'font-size:22px;font-weight:700';
+
+  buildScenarios(premiumPct, fxRatio);
+  buildParams(premiumPct, fxStart);
+  buildHistoryChart();
+}
+
+// ─── SCENARIOS ───
+function buildScenarios(premiumPct, fxRatio) {
+  var growths = [-20, -10, 0, 10, 20, 30, 50, 75, 100];
+  var premiumPerNom = (premiumPct / 100) * NOMINAL;
+  var tbody = document.getElementById('scenarioBody');
+  tbody.innerHTML = '';
+
+  growths.forEach(function(g, i) {
+    var basketRatio = 1 + g / 100;
+    var res = calcPayoff(basketRatio, fxRatio);
+    var ret = premiumPerNom > 0 ? ((res.payoff - premiumPerNom) / premiumPerNom) * 100 : 0;
+
+    var tr = document.createElement('tr');
+    if (i % 2 === 0) tr.className = 'even';
+
+    tr.innerHTML =
+      '<td>' + (g > 0 ? '+' : '') + g + '%</td>' +
+      '<td>' + (res.excess * 100).toFixed(0) + '%</td>' +
+      '<td>' + ((fxRatio - 1) >= 0 ? '+' : '') + ((fxRatio - 1) * 100).toFixed(0) + '%</td>' +
+      '<td>' + res.payoff.toFixed(0) + ' ₽</td>' +
+      '<td class="fw700 ' + (ret >= 0 ? 'text-green' : 'text-red') + '">' +
+        (ret > 0 ? '+' : '') + ret.toFixed(0) + '%</td>';
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('tableSubtitle').textContent =
+    'Премия ' + premiumPct + '%, курсовая доходность ' + ((fxRatio - 1) >= 0 ? '+' : '') + ((fxRatio - 1) * 100).toFixed(0) + '%';
+}
+
+// ─── PARAMS ───
+function buildParams(premiumPct, fxStart) {
+  var params = [
+    ['Базовый актив', 'Корзина 5 техно-акций'],
+    ['Тип', 'Колл-варрант на корзину'],
+    ['Участие', '100%'],
+    ['Барьер дохода', '100% (рост корзины)'],
+    ['Курсовая компонента', 'USD/RUB (с учётом спреда)'],
+    ['Премия', premiumPct + '% от номинала', 'Индикативно. Финальная стоимость определяется 11.06.2026'],
+    ['Номинал', '1 000 ₽'],
+    ['Дата размещения', '15.06.2026'],
+    ['Первоначальный фиксинг акций', '07.07.2026'],
+    ['Финальный фиксинг акций', '11.06.2029'],
+    ['Первоначальный фиксинг USD/RUB', '30.06.2026'],
+    ['Финальный фиксинг USD/RUB', '28.06.2029'],
+    ['Плановое погашение', '17.07.2029'],
+    ['Возврат номинала', 'Отсутствует'],
+    ['Макс. убыток', 'Уплаченная премия'],
+    ['ISIN', 'RU000A10B9X5'],
+  ];
+  var grid = document.getElementById('paramsGrid');
+  grid.innerHTML = '';
+  params.forEach(function(p) {
+    var d = document.createElement('div');
+    d.className = 'param-item';
+    var noteHtml = p[2] ? '<div style="font-size:11px; color:#e8782a; margin-top:8px; line-height:1.4;">ℹ️ ' + p[2] + '</div>' : '';
+    d.innerHTML = '<div class="param-key">' + p[0] + '</div><div class="param-val">' + p[1] + '</div>' + noteHtml;
+    grid.appendChild(d);
+  });
+}
+
+// ─── HISTORICAL DATA (база 100 = окт 2024, помесячно) ───
+var HIST = {
+  labels: ["10/2024","11/2024","12/2024","01/2025","02/2025","03/2025","04/2025","05/2025","06/2025","07/2025","08/2025","09/2025","10/2025","11/2025","12/2025","01/2026","02/2026","03/2026","04/2026","05/2026","06/2026"],
+  series: {
+    SMH:  [100.0,100.2,100.2,100.8,96.3,87.5,87.4,99.2,115.4,119.5,120.1,135.0,150.2,145.8,149.0,166.9,168.1,158.6,209.7,247.8,258.4],
+    NVDA: [100.0,104.1,101.2,90.4,94.1,81.6,82.0,101.8,119.0,134.0,131.2,140.5,152.5,133.3,140.5,144.0,133.5,131.4,150.3,159.0,162.6],
+    AMD:  [100.0,95.2,83.8,80.5,69.3,71.3,67.6,76.9,98.5,122.4,112.9,112.3,177.8,151.0,148.6,164.3,139.0,141.2,246.1,358.2,363.9],
+    DELL: [100.0,103.2,93.2,83.8,83.1,73.7,74.2,90.0,99.2,107.3,98.8,114.7,131.0,107.9,101.8,92.6,119.8,132.8,169.0,340.5,334.8],
+    NBIS: [100.0,102.9,129.6,152.8,152.0,98.7,106.3,171.9,258.8,254.6,319.6,525.1,611.9,443.7,391.5,398.5,426.5,485.3,646.5,1080.9,1163.6]
+  }
+};
+
+// Корпоративные цвета
+var COLORS = {
+  SMH:  '#00B8D4',  // cyan (VanEck)
+  NVDA: '#76B900',  // NVIDIA green
+  AMD:  '#ED1C24',  // AMD red
+  DELL: '#0076CE',  // Dell blue
+  NBIS: '#FFCC00'   // Nebius yellow
+};
+var TICKER_MAP = { smh:'SMH', nvda:'NVDA', amd:'AMD', dell:'DELL', nbis:'NBIS' };
+
+// Будущие точки (квартально до погашения 06/2029)
+var PROJ_LABELS = ["09/2026","12/2026","03/2027","06/2027","09/2027","12/2027","03/2028","06/2028","09/2028","12/2028","03/2029","06/2029"];
+
+var historyChart = null;
+var hiddenStocks = {};
+var chartScale = 'linear';
+
+function buildHistoryChart() {
+  var allLabels = HIST.labels.concat(PROJ_LABELS);
+  var histLen = HIST.labels.length;
+  var datasets = [];
+
+  Object.keys(TICKER_MAP).forEach(function(lc) {
+    var T = TICKER_MAP[lc];
+    var hist = HIST.series[T];
+    var current = hist[hist.length - 1];
+    var perf = parseFloat(document.getElementById('perf-' + lc).value) / 100;
+    var endpoint = current * (1 + perf);
+
+    // Build full data: history then linear projection to endpoint
+    var data = hist.slice();
+    var n = PROJ_LABELS.length;
+    for (var i = 1; i <= n; i++) {
+      data.push(+(current + (endpoint - current) * (i / n)).toFixed(1));
+    }
+
+    datasets.push({
+      label: T,
+      data: data,
+      borderColor: COLORS[T],
+      backgroundColor: COLORS[T],
+      borderWidth: 2.5,
+      pointRadius: 0,
+      pointHoverRadius: 5,
+      tension: 0.25,
+      hidden: !!hiddenStocks[T],
+      segment: {
+        borderDash: function(ctx) { return ctx.p0DataIndex >= histLen - 1 ? [5, 4] : undefined; }
+      }
+    });
+  });
+
+  if (historyChart) {
+    historyChart.data.labels = allLabels;
+    historyChart.data.datasets = datasets;
+    historyChart.options.scales.y.type = chartScale;
+    historyChart.update('none');
+    buildLegend();
+    return;
+  }
+
+  var ctx = document.getElementById('historyChart').getContext('2d');
+  historyChart = new Chart(ctx, {
+    type: 'line',
+    plugins: [{
+      id: 'startLine',
+      afterDraw: function(chart) {
+        // vertical line at "сейчас" (junction)
+        var x = chart.scales.x.getPixelForValue(histLen - 1);
+        var ctx2 = chart.ctx, yA = chart.scales.y;
+        ctx2.save();
+        ctx2.beginPath();
+        ctx2.setLineDash([3, 3]);
+        ctx2.strokeStyle = 'rgba(232,120,42,0.5)';
+        ctx2.lineWidth = 1.5;
+        ctx2.moveTo(x, yA.top); ctx2.lineTo(x, yA.bottom); ctx2.stroke();
+        ctx2.setLineDash([]);
+        ctx2.fillStyle = 'rgba(232,120,42,0.9)';
+        ctx2.font = 'bold 11px sans-serif';
+        ctx2.textAlign = 'center';
+        ctx2.fillText('сегодня', x, yA.top - 4);
+        ctx2.restore();
+      }
+    }],
+    data: { labels: allLabels, datasets: datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(13,27,42,0.95)',
+          titleColor: '#e8782a', bodyColor: '#fff',
+          borderColor: 'rgba(232,120,42,0.3)', borderWidth: 1, padding: 12,
+          callbacks: {
+            label: function(item) { return item.dataset.label + ': ' + item.raw + ' (база 100)'; }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: 'rgba(255,255,255,0.4)', maxRotation: 0, autoSkip: true, maxTicksLimit: 10 },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y: {
+          type: chartScale,
+          title: { display: true, text: 'Цена, база 100', color: 'rgba(255,255,255,0.4)', font: { size: 12 } },
+          ticks: { color: 'rgba(255,255,255,0.4)' },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
+      }
+    }
+  });
+  buildLegend();
+}
+
+function buildLegend() {
+  var c = document.getElementById('chartLegend');
+  c.innerHTML = '';
+  Object.keys(TICKER_MAP).forEach(function(lc) {
+    var T = TICKER_MAP[lc];
+    var item = document.createElement('div');
+    item.className = 'chart-legend-item' + (hiddenStocks[T] ? ' hidden' : '');
+    item.innerHTML = '<span class="chart-legend-dot" style="background:' + COLORS[T] + '"></span>' + T;
+    item.onclick = function() {
+      hiddenStocks[T] = !hiddenStocks[T];
+      buildHistoryChart();
+    };
+    c.appendChild(item);
+  });
+}
+
+function setScale(s) {
+  chartScale = s;
+  document.getElementById('scaleLinear').classList.toggle('active', s === 'linear');
+  document.getElementById('scaleLog').classList.toggle('active', s === 'logarithmic');
+  buildHistoryChart();
+}
+
+// ─── INIT ───
+recalc();
+</script>
+</body>
+</html>
