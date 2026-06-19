@@ -423,10 +423,10 @@
 
         <div class="input-group">
           <div class="label">
-            <span>Цена варранта (премия), % от номинала</span>
-            <span><input type="number" id="premiumInput" value="50" min="5" max="100" step="0.5" oninput="recalc()"> <span style="color:rgba(255,255,255,0.4)">%</span></span>
+            <span>Цена размещения (премия), % от номинала</span>
+            <span class="label-value">50%</span>
           </div>
-          <div style="font-size:12px; color:#e8a44a; margin-top:8px; background:rgba(232,120,42,0.1); padding:8px 12px; border-radius:8px; border:1px solid rgba(232,120,42,0.2);">ℹ️ Цена индикативна. Финальная стоимость будет определена 11 июня 2026 года.</div>
+          <div style="font-size:12px; color:#e8a44a; margin-top:8px; background:rgba(232,120,42,0.1); padding:8px 12px; border-radius:8px; border:1px solid rgba(232,120,42,0.2);">ℹ️ Финальная цена размещения — 50% от номинала.</div>
         </div>
 
         <div class="divider-line"></div>
@@ -578,7 +578,7 @@
     <h2>Параметры выпуска</h2>
     <div class="params-grid" id="paramsGrid"></div>
     <p style="text-align:center; max-width:680px; margin:24px auto 0; font-size:13px; color:#999;">
-      ℹ️ Цена (премия) индикативна. Финальная стоимость будет определена 11 июня 2026 года.
+      ℹ️ Цена размещения зафиксирована: 50% от номинальной стоимости Облигации.
     </p>
   </div>
 </section>
@@ -643,7 +643,7 @@ function calcPayoff(basketRatio, fxRatio) {
 // ─── RECALC ───
 function recalc() {
   var invest = parseFloat(document.getElementById('investSlider').value);
-  var premiumPct = parseFloat(document.getElementById('premiumInput').value) || 30;
+  var premiumPct = 50;  // финальная цена размещения 50% от номинала
   var fxStart = parseFloat(document.getElementById('fxStartInput').value) || 80;
   var fxEnd = parseFloat(document.getElementById('fxEndSlider').value);
 
@@ -742,7 +742,7 @@ function buildParams(premiumPct, fxStart) {
     ['Участие', '100%'],
     ['Барьер дохода', '100% (рост корзины)'],
     ['Курсовая компонента', 'USD/RUB (с учётом спреда)'],
-    ['Премия', premiumPct + '% от номинала', 'Индикативно. Финальная стоимость определяется 11.06.2026'],
+    ['Цена размещения (премия)', '50% от номинала'],
     ['Номинал', '1 000 ₽'],
     ['Дата начала размещения', '16.06.2026'],
     ['Первоначальный фиксинг акций', '07.07.2026'],
